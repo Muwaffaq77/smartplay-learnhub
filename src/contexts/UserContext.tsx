@@ -26,6 +26,8 @@ interface UserContextType {
   logout: () => void;
   updateUser: (data: Partial<User>) => void;
   setTrack: (track: Track) => void;
+  isOnboarded: () => boolean;
+  completeOnboarding: (name: string, track: Track) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -70,7 +72,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Mock user data
       const mockUser: User = {
         id: '1',
-        name: 'Test User',
+        name: '',
         email,
         level: 1,
         stage: 1,
@@ -98,7 +100,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Mock user data
       const mockUser: User = {
         id: '1',
-        name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`,
+        name: '',
         email: `user@${provider}.com`,
         level: 1,
         stage: 1,
@@ -138,6 +140,19 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const isOnboarded = () => {
+    if (!user) return false;
+    return !!(user.name && user.track);
+  };
+
+  const completeOnboarding = (name: string, track: Track) => {
+    if (user) {
+      const updatedUser = { ...user, name, track };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -149,6 +164,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         updateUser,
         setTrack,
+        isOnboarded,
+        completeOnboarding,
       }}
     >
       {children}

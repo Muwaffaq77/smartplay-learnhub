@@ -37,7 +37,7 @@ const AuthPage = () => {
     try {
       setLoading(true);
       await login(email, password);
-      navigate("/dashboard");
+      navigate("/onboarding");
     } catch (error) {
       toast({
         title: "فشل تسجيل الدخول",
@@ -98,7 +98,7 @@ const AuthPage = () => {
       setLoading(true);
       // Simulate OTP verification and account creation
       await login(email, password);
-      navigate("/dashboard");
+      navigate("/onboarding");
     } catch (error) {
       toast({
         title: "فشل التحقق",
@@ -114,7 +114,7 @@ const AuthPage = () => {
     try {
       setLoading(true);
       await loginWithSocial(provider);
-      navigate("/dashboard");
+      navigate("/onboarding");
     } catch (error) {
       toast({
         title: "فشل تسجيل الدخول",
