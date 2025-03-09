@@ -16,6 +16,8 @@ import Course from "./pages/Course";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Onboarding from "./pages/Onboarding";
+import Chat from "./pages/Chat";
+import Leaderboard from "./pages/Leaderboard";
 
 // Context
 import { UserProvider, useUser } from "./contexts/UserContext";
@@ -96,6 +98,8 @@ const AppRoutes = () => {
         <Route path="/levels" element={<PrivateRoute><Levels /></PrivateRoute>} />
         <Route path="/course/:id" element={<PrivateRoute><Course /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/chat" element={<PrivateRoute><Chat /></PrivateRoute>} />
+        <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>

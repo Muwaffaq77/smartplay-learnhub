@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -7,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUser } from "@/contexts/UserContext";
-import { Check, Loader2, BookText, Flask } from "lucide-react";
+import { Check, Loader2, BookText, TestTube } from "lucide-react";
 
 const OnboardingPage = () => {
   const [name, setName] = useState("");
@@ -42,10 +41,8 @@ const OnboardingPage = () => {
     try {
       setLoading(true);
       
-      // Complete onboarding and save data
       completeOnboarding(name, selectedTrack);
       
-      // Navigate to dashboard
       navigate("/dashboard");
     } catch (error) {
       toast({
@@ -125,7 +122,7 @@ const OnboardingPage = () => {
                 }`}
                 onClick={() => setSelectedTrack('scientific')}
               >
-                <Flask size={40} className="text-white mb-2" />
+                <TestTube size={40} className="text-white mb-2" />
                 <span className="text-white font-bold">القسم العلمي</span>
                 {selectedTrack === 'scientific' && (
                   <div className="absolute top-2 right-2 bg-blue-500 rounded-full p-1">
