@@ -1,40 +1,57 @@
 
 import { motion } from "framer-motion";
-import PageLayout from "@/components/layout/PageLayout";
-import { Lock } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Lock, Home, User, Book, Award, MessageSquare } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
 
   const levels = [
     {
-      id: "A1",
-      name: "A1",
-      color: "from-cyan-300 to-cyan-400",
-      borderColor: "border-cyan-400",
-      icon: "👨‍🌾",
+      id: "bronze",
+      name: "برونزي",
+      color: "from-amber-600 to-amber-700",
+      borderColor: "border-amber-500",
+      icon: "🏆",
       locked: false,
-      position: "bottom-32",
+      position: "bottom-32 left-[20%]",
     },
     {
-      id: "A2",
-      name: "A2",
-      color: "from-amber-300 to-amber-400",
-      borderColor: "border-amber-400",
-      icon: "🎸",
+      id: "silver",
+      name: "فضي",
+      color: "from-gray-300 to-gray-400",
+      borderColor: "border-gray-400",
+      icon: "🥈",
       locked: true,
-      position: "bottom-80",
+      position: "bottom-60 left-[35%]",
     },
     {
-      id: "B1",
-      name: "B1",
-      color: "from-green-300 to-green-400",
-      borderColor: "border-green-400",
-      icon: "💃",
+      id: "gold",
+      name: "ذهبي",
+      color: "from-yellow-400 to-yellow-500",
+      borderColor: "border-yellow-500",
+      icon: "🥇",
       locked: true,
-      position: "bottom-[32rem]",
+      position: "bottom-80 left-1/2 -translate-x-1/2",
+    },
+    {
+      id: "diamond",
+      name: "ماسي",
+      color: "from-blue-300 to-blue-400",
+      borderColor: "border-blue-400",
+      icon: "💎",
+      locked: true,
+      position: "bottom-60 right-[35%]",
+    },
+    {
+      id: "legendary",
+      name: "أسطوري",
+      color: "from-purple-500 to-purple-600",
+      borderColor: "border-purple-400",
+      icon: "👑",
+      locked: true,
+      position: "bottom-32 right-[20%]",
     },
   ];
 
@@ -62,7 +79,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Background Decorative Shape (Deer Silhouette) */}
+      {/* Background Decorative Shape */}
       <div className="absolute bottom-1/4 right-5 text-blue-900 opacity-20">
         <svg width="100" height="120" viewBox="0 0 100 120" className="fill-current">
           <path d="M90,40 C85,20 75,10 60,5 C45,0 30,10 25,15 C20,20 15,30 20,45 C25,60 35,70 30,85 C25,100 15,110 5,115 C0,117 0,120 5,120 C15,120 30,115 40,105 C50,95 55,90 65,95 C75,100 85,95 95,85 C105,75 95,60 90,40 Z" />
@@ -86,7 +103,7 @@ const Dashboard = () => {
         {levels.map((level, index) => (
           <motion.div
             key={level.id}
-            className={`absolute left-1/2 ${level.position} -translate-x-1/2`}
+            className={`absolute ${level.position}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.2, duration: 0.5 }}
@@ -99,6 +116,11 @@ const Dashboard = () => {
                 onClick={() => !level.locked && navigate(`/levels/${level.id}`)}
               >
                 <span>{level.icon}</span>
+                {level.locked && (
+                  <div className="absolute inset-0 rounded-full bg-black bg-opacity-40 flex items-center justify-center">
+                    <Lock size={24} className="text-white" />
+                  </div>
+                )}
               </div>
               
               <div className="mt-2 flex items-center gap-1 text-white font-bold text-xl">
@@ -108,6 +130,36 @@ const Dashboard = () => {
             </div>
           </motion.div>
         ))}
+      </div>
+
+      {/* Bottom Navigation Bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white bg-opacity-90 backdrop-blur-md shadow-lg rounded-t-xl">
+        <div className="flex justify-around items-center p-2">
+          <button onClick={() => navigate('/dashboard')} className="flex flex-col items-center p-2 text-blue-800">
+            <Home size={24} />
+            <span className="text-xs mt-1">الرئيسية</span>
+          </button>
+          
+          <button onClick={() => navigate('/levels')} className="flex flex-col items-center p-2 text-gray-600">
+            <Book size={24} />
+            <span className="text-xs mt-1">الدروس</span>
+          </button>
+          
+          <button onClick={() => navigate('/chat')} className="flex flex-col items-center p-2 text-gray-600">
+            <MessageSquare size={24} />
+            <span className="text-xs mt-1">الدردشة</span>
+          </button>
+          
+          <button onClick={() => navigate('/leaderboard')} className="flex flex-col items-center p-2 text-gray-600">
+            <Award size={24} />
+            <span className="text-xs mt-1">المتصدرين</span>
+          </button>
+          
+          <button onClick={() => navigate('/profile')} className="flex flex-col items-center p-2 text-gray-600">
+            <User size={24} />
+            <span className="text-xs mt-1">الملف الشخصي</span>
+          </button>
+        </div>
       </div>
     </div>
   );
