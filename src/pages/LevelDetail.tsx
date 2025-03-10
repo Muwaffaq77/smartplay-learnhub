@@ -1,11 +1,11 @@
 
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import PageLayout from "@/components/layout/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Book, ChevronRight, BookOpen, Beaker, Language, BookText, History, Map, Atom, Palette, AlertTriangle } from "lucide-react";
+import { Book, ChevronRight, BookOpen, Beaker, Languages, BookText, History, Map, Atom, Palette, AlertTriangle } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
 
 const LevelDetail = () => {
@@ -64,7 +64,7 @@ const LevelDetail = () => {
   // المواد حسب التخصص
   const commonSubjects = [
     { id: "arabic", name: "اللغة العربية", icon: <BookText className="h-5 w-5" />, color: "bg-red-100 text-red-700" },
-    { id: "english", name: "اللغة الإنجليزية", icon: <Language className="h-5 w-5" />, color: "bg-blue-100 text-blue-700" },
+    { id: "english", name: "اللغة الإنجليزية", icon: <Languages className="h-5 w-5" />, color: "bg-blue-100 text-blue-700" },
     { id: "islamic", name: "التربية الإسلامية", icon: <BookOpen className="h-5 w-5" />, color: "bg-green-100 text-green-700" },
   ];
 
