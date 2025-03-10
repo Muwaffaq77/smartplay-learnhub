@@ -3,6 +3,18 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Track = 'literary' | 'scientific';
 
+interface Subject {
+  id: string;
+  progress: number;
+  completedLessons: number[];
+  totalQuestions: number;
+  correctAnswers: number;
+}
+
+interface UserSubjects {
+  [key: string]: Subject;  // مفتاح هو معرف المادة
+}
+
 interface User {
   id: string;
   name: string;
@@ -15,6 +27,9 @@ interface User {
   correctAnswers: number;
   totalAnswers: number;
   avatar?: string;
+  subjects?: UserSubjects;
+  streakDays?: number;
+  lastActive?: string;
 }
 
 interface UserContextType {
@@ -28,6 +43,7 @@ interface UserContextType {
   setTrack: (track: Track) => void;
   isOnboarded: () => boolean;
   completeOnboarding: (name: string, track: Track) => void;
+  updateSubjectProgress: (subjectId: string, lessonId: number, correct: number, total: number) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -44,11 +60,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Check if user is logged in on mount
+  // تحقق مما إذا كان المستخدم مسجل الدخول عند تحميل الصفحة
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Simulate fetching user from localStorage
+        // محاكاة جلب بيانات المستخدم من التخزين المحلي
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
           setUser(JSON.parse(storedUser));
@@ -63,13 +79,39 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuth();
   }, []);
 
+  // تحديث تاريخ آخر نشاط وأيام المتابعة المتتالية
+  useEffect(() => {
+    if (user) {
+      const today = new Date().toISOString().split('T')[0];
+      if (user.lastActive !== today) {
+        let updatedStreakDays = user.streakDays || 0;
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        
+        if (user.lastActive === yesterdayStr) {
+          updatedStreakDays += 1;
+        } else if (!user.lastActive) {
+          updatedStreakDays = 1;
+        } else {
+          updatedStreakDays = 1; // إعادة تعيين أيام المتابعة إذا فات يوم
+        }
+        
+        updateUser({
+          lastActive: today,
+          streakDays: updatedStreakDays,
+        });
+      }
+    }
+  }, [user]);
+
   const login = async (email: string, password: string) => {
     try {
       setLoading(true);
-      // Simulate authentication API call
+      // محاكاة استدعاء API المصادقة
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock user data
+      // بيانات مستخدم وهمية
       const mockUser: User = {
         id: '1',
         name: '',
@@ -79,6 +121,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         points: 0,
         correctAnswers: 0,
         totalAnswers: 0,
+        streakDays: 0,
+        subjects: {},
       };
       
       setUser(mockUser);
@@ -94,10 +138,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithSocial = async (provider: 'google' | 'facebook') => {
     try {
       setLoading(true);
-      // Simulate social authentication
+      // محاكاة المصادقة الاجتماعية
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock user data
+      // بيانات مستخدم وهمية
       const mockUser: User = {
         id: '1',
         name: '',
@@ -107,6 +151,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         points: 0,
         correctAnswers: 0,
         totalAnswers: 0,
+        streakDays: 0,
+        subjects: {},
       };
       
       setUser(mockUser);
@@ -147,9 +193,57 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const completeOnboarding = (name: string, track: Track) => {
     if (user) {
-      const updatedUser = { ...user, name, track };
+      const updatedUser = { 
+        ...user, 
+        name, 
+        track,
+        subjects: {},
+        lastActive: new Date().toISOString().split('T')[0],
+        streakDays: 1,
+      };
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+  };
+
+  const updateSubjectProgress = (subjectId: string, lessonId: number, correct: number, total: number) => {
+    if (user) {
+      const subjects = user.subjects || {};
+      const subject = subjects[subjectId] || { 
+        id: subjectId, 
+        progress: 0, 
+        completedLessons: [], 
+        totalQuestions: 0,
+        correctAnswers: 0
+      };
+      
+      const newCompletedLessons = [...(subject.completedLessons || [])];
+      if (!newCompletedLessons.includes(lessonId)) {
+        newCompletedLessons.push(lessonId);
+      }
+      
+      const updatedSubject = {
+        ...subject,
+        completedLessons: newCompletedLessons,
+        totalQuestions: (subject.totalQuestions || 0) + total,
+        correctAnswers: (subject.correctAnswers || 0) + correct,
+        progress: Math.round((newCompletedLessons.length / 6) * 100), // افتراض 6 دروس لكل مادة
+      };
+      
+      const updatedSubjects = {
+        ...subjects,
+        [subjectId]: updatedSubject
+      };
+      
+      const totalCorrect = user.correctAnswers + correct;
+      const totalAnswers = user.totalAnswers + total;
+      
+      updateUser({
+        subjects: updatedSubjects,
+        correctAnswers: totalCorrect,
+        totalAnswers: totalAnswers,
+        points: user.points + (correct * 10) // إضافة 10 نقاط لكل إجابة صحيحة
+      });
     }
   };
 
@@ -166,6 +260,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setTrack,
         isOnboarded,
         completeOnboarding,
+        updateSubjectProgress,
       }}
     >
       {children}

@@ -18,6 +18,8 @@ import NotFound from "./pages/NotFound";
 import Onboarding from "./pages/Onboarding";
 import Chat from "./pages/Chat";
 import Leaderboard from "./pages/Leaderboard";
+import LevelDetail from "./pages/LevelDetail";
+import SubjectDetail from "./pages/SubjectDetail";
 
 // Context
 import { UserProvider, useUser } from "./contexts/UserContext";
@@ -96,6 +98,8 @@ const AppRoutes = () => {
         <Route path="/onboarding" element={<OnboardingRoute><Onboarding /></OnboardingRoute>} />
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
         <Route path="/levels" element={<PrivateRoute><Levels /></PrivateRoute>} />
+        <Route path="/levels/:levelId" element={<PrivateRoute><LevelDetail /></PrivateRoute>} />
+        <Route path="/subject/:levelId/:subjectId" element={<PrivateRoute><SubjectDetail /></PrivateRoute>} />
         <Route path="/course/:id" element={<PrivateRoute><Course /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
         <Route path="/chat" element={<PrivateRoute><Chat /></PrivateRoute>} />

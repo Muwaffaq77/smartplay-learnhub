@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import BottomNavigation from "./BottomNavigation";
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -42,10 +43,11 @@ const PageLayout = ({ children, className = "", withoutPadding = false }: PageLa
         initial="initial"
         animate="animate"
         exit="exit"
-        className={`flex-grow ${!withoutPadding ? 'pt-20 pb-10' : ''} ${className}`}
+        className={`flex-grow ${!withoutPadding ? 'pt-20 pb-20' : ''} ${className}`}
       >
         {children}
       </motion.main>
+      <BottomNavigation />
       <Footer />
     </div>
   );

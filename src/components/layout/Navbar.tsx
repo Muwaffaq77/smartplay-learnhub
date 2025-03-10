@@ -11,7 +11,8 @@ import {
   LogOut,
   Menu,
   X,
-  HelpCircle
+  HelpCircle,
+  Award
 } from "lucide-react";
 
 const Navbar = () => {
@@ -33,7 +34,7 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    // Close mobile menu when route changes
+    // إغلاق القائمة المتنقلة عند تغيير المسار
     setIsMenuOpen(false);
   }, [location.pathname]);
 
@@ -42,6 +43,7 @@ const Navbar = () => {
     navigate("/");
   };
 
+  // لا نعرض شريط التنقل في صفحة المصادقة
   if (location.pathname === "/auth") return null;
 
   return (
@@ -57,7 +59,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link 
-          to="/"
+          to={isAuthenticated ? "/dashboard" : "/"}
           className="flex items-center space-x-2 text-blue-deep"
         >
           <motion.div 
@@ -88,14 +90,29 @@ const Navbar = () => {
                 )}
               </Link>
               <Link 
-                to="/levels"
+                to="/chat"
                 className="relative text-blue-deep hover:text-blue-mid transition-colors"
               >
                 <span className="flex items-center gap-1">
-                  <BookOpen size={16} />
-                  <span>المستويات</span>
+                  <HelpCircle size={16} />
+                  <span>المساعدة</span>
                 </span>
-                {location.pathname === '/levels' && (
+                {location.pathname === '/chat' && (
+                  <motion.div 
+                    layoutId="navbar-indicator" 
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-mid rounded-full" 
+                  />
+                )}
+              </Link>
+              <Link 
+                to="/leaderboard"
+                className="relative text-blue-deep hover:text-blue-mid transition-colors"
+              >
+                <span className="flex items-center gap-1">
+                  <Award size={16} />
+                  <span>المتصدرين</span>
+                </span>
+                {location.pathname.includes('/leaderboard') && (
                   <motion.div 
                     layoutId="navbar-indicator" 
                     className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-mid rounded-full" 
@@ -171,9 +188,13 @@ const Navbar = () => {
                   <LayoutDashboard size={20} />
                   <span className="text-lg">الرئيسية</span>
                 </Link>
-                <Link to="/levels" className="flex items-center space-x-2 p-2 rounded-md hover:bg-slate-100">
-                  <BookOpen size={20} />
-                  <span className="text-lg">المستويات</span>
+                <Link to="/chat" className="flex items-center space-x-2 p-2 rounded-md hover:bg-slate-100">
+                  <HelpCircle size={20} />
+                  <span className="text-lg">المساعدة</span>
+                </Link>
+                <Link to="/leaderboard" className="flex items-center space-x-2 p-2 rounded-md hover:bg-slate-100">
+                  <Award size={20} />
+                  <span className="text-lg">المتصدرين</span>
                 </Link>
                 <Link to="/profile" className="flex items-center space-x-2 p-2 rounded-md hover:bg-slate-100">
                   <User size={20} />
